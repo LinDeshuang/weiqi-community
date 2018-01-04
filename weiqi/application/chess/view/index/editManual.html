@@ -1,0 +1,92 @@
+{extend name="base"/}
+{block name="main"}
+	<nav aria-label="breadcrumb">
+	  <ol class="breadcrumb">
+	    <li class="breadcrumb-item"><a href="{:url('chess/index/index')}">围棋打谱</a></li>
+	    <li class="breadcrumb-item" aria-current="page"><a href="{:url('chess/index/manualManage')}">我的棋谱</a></li>
+	    <li class="breadcrumb-item active" aria-current="page">编辑棋谱</li>
+	  </ol>
+	</nav>
+	<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
+	    <strong>警告!</strong>
+    </div>
+
+	<canvas id="wqBoard"></canvas>
+	<div class="text-center bg-dark wqFuncBar">
+		<button class="btn btn-light" id="takePiece" aria-disabled = 'false'>提子</button>
+		<div class="dropdown">
+		  <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    下棋
+		  </button>
+		  <div class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton">
+	  	    <a class="dropdown-item" href="#">
+  				<button class="btn btn-secondary disable" id="playChess" aria-disabled = 'true'>对弈</button>	  	    
+	  	    </a>
+		    <a class="dropdown-item" href="#">
+				<button class="btn btn-dark" id="blackChess" aria-disabled = 'false'>黑棋</button>
+      	    </a>
+		    <a class="dropdown-item" href="#">
+		    	<button class="btn btn-dark" id="whiteChess" aria-disabled = 'false'>白棋</button>
+		    </a>
+			
+		  </div>
+		</div>
+		<button class="btn btn-light" id="backout" aria-disabled = 'false'>撤销</button>
+		<button class="btn btn-secondary disable" id="forward" aria-disabled = 'true'>恢复</button>
+	</div>
+	
+    <div class="text-center bg-dark container" style="padding: 10px;">
+	    	<button class="btn btn-light btn-sm" data-toggle="collapse" href="#saveForm" role="button" aria-expanded="false" aria-controls="saveForm">保存棋谱</button>
+			<div class="collapse" id="saveForm">
+				<div class="card card-body">
+				<form id="manualForm"  method="post" action="{:url('chess/index/save')}">
+					<input type="hidden" name="id" value="{$manual.id}">
+					<input type="hidden" name="user_id" value="{$manual.user_id}">
+					<div class="form-group">
+						<label for="manual_name">棋谱命名</label>
+						<input type="text" class="form-control" id="manual_name" name="manual_name"  placeholder="输入你的棋谱命名" value="{$manual.manual_name}" required>
+
+					</div>
+					<div class="form-group">
+						<label for="manual_intro">棋谱简介</label>
+						<textarea name="manual_intro" class="form-control" id="manual_intro" required placeholder="输入棋谱的简介">{$manual.manual_intro}</textarea>
+					</div>
+					<button type="submit" class="btn btn-primary">保存</button>
+				</form>
+				</div>
+			</div>
+    </div>
+
+{/block}
+{block name='js'}
+<script type="text/javascript" src="__JS__/weiqi.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$('#manualForm').submit(function(){
+			var manual_data = curData;
+			var data = $(this).serialize() + '&manual_data=' + JSON.stringify(manual_data) ;
+			$.ajax({
+				url:$(this).attr('action'),
+				data:data,
+				method:'post',
+				dataType:'json',
+				success:function(data){
+					if(data.errcode == 0){
+						topAlert('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;保存成功，正在跳转至我的棋谱','success');
+						setTimeout(function(){window.location.href = "{:url('chess/index/manualManage')}";},2000);
+					}else if(data.errcode == '40200'){
+						topAlert(data.errmsg.msg,'warning');
+						$('input[name='+data.errmsg.name+']').focus();
+					}else if(data.errcode == '40100'){
+						topAlert(data.errmsg,'warning');
+					}else{
+						topAlert('未知错误','warning');
+					}
+				}
+			});
+			return false;
+		});
+	});
+	var sqlData = JSON.parse('{$manual.manual_data}');
+</script>
+{/block}

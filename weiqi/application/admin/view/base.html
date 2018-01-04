@@ -1,0 +1,74 @@
+<html>
+<head>
+  {include file='../application/common/view/head.html' /}
+	<link rel="stylesheet" type="text/css" href="__CSS__/admin.css">
+  <style type="text/css">
+    .nav-active{padding:5px;background-color: #666666;color:#ffffff !important;font-weight: bolder;border-radius: 5px;text-align: center;}
+  </style>
+	{block name="css"}{/block}
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark" id="header-nav">
+  <a class="navbar-brand" href="{:url('admin/index/index')}">棋手中心</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  {notempty name="user_account"}
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{:url('admin/index/index')}">基本信息</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{:url('admin/index/edit')}">信息更新</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{:url('admin/index/account')}">账号设置</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{:url('admin/index/photo')}">头像设置</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{:url('admin/notion/index')}">我的观点</a>
+      </li>
+    </ul>
+  </div>
+  {/notempty}
+</nav>
+{block name="header"}
+{/block}
+{block name="main"}{/block}
+<section class="fix-bottom"></section>
+<nav class="bottom-bar bg-secondary">
+	<div class="row bg-light">
+     	<div class="col-4 col-sm-4 col-md-4 col-lg-4 btn btn-outline-light text-dark btn-md">
+     		<a href="{:url('chess/index/index')}"><i class="fa fa-adjust fa-lg"></i>&nbsp;围棋打谱</a>
+     	</div>
+  		<div class="col-4 col-sm-4 col-md-4 col-lg-4 text-dark  btn btn-outline-light btn-md">
+  			<a href="{:url('index/index/index')}"><i class="fa fa-home fa-lg"></i>&nbsp;棋谱交流</a>
+  		</div>
+  		<div class="col-4 col-sm-4 col-md-4 col-lg-4 btn btn-outline-light bg-dark text-light btn-md">
+  			<i class="fa fa-street-view fa-lg"></i>&nbsp;我是棋手
+  		</div>
+	</div>
+</nav>
+</body>
+<script type="text/javascript" src="__JS__/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__JS__/popper.min.js"></script>
+<script type="text/javascript" src="__JS__/bootstrap.min.js"></script>
+<script type="text/javascript" src="__JS__/global.js"></script>
+{block name="js"}{/block}
+<script type="text/javascript">
+  //头部导航菜单的当前菜单显示为活跃状态
+  $(function(){
+    var active_nav = '/admin/'+'{$controller}/{$action}.html';
+    $('#header-nav').find('.nav-link').each(function(){
+      if($(this).attr('href') == active_nav)
+      {
+        $(this).addClass('nav-active');
+      }
+    });
+  });
+</script>
+</html>

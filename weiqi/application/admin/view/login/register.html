@@ -1,0 +1,122 @@
+{extend name="base"/}
+{block name="top-nav"}<span></span>{/block}
+{block name="header"}
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+      <h2>成为棋手</h2> 
+  </div>
+</div>
+{/block}
+{block name="main"}
+<div class="container">
+	<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
+	    <strong>警告!</strong>
+    </div>
+	<form id="ajaxForm" class="text-center" method="post" action="{:url('admin/login/register')}">
+	    <div class="form-group">
+	    	<div class="form-row align-items-center">
+			    <label for="account" class="col-3 col-sm-3 col-md-2">账号:</label>
+		    	<input type="text" class="form-control col-9 col-sm-9 col-md-8" id="account" name="account" placeholder="请输入账号" required>
+	    	</div>
+
+	  	</div>
+	  	<div class="form-group">
+	  		<div class="form-row align-items-center">
+			    <label for="pwd" class="col-3 col-sm-3 col-md-2">密码:</label>
+		    	<input type="password" class="form-control col-9 col-sm-9 col-md-8" id="pwd" name="pwd" placeholder="请输入密码" required>
+	  		</div>
+
+	  	</div>
+	  	<div class="form-group">
+	  		<div class="form-row align-items-center">
+			    <label for="confirm_pwd" class="col-3 col-sm-3 col-md-2">确认<br/>密码:</label>
+		    	<input type="password" class="form-control col-9 col-sm-9 col-md-8" id="confirm_pwd" name="confirm_pwd" placeholder="请输入密码" required>
+	  		</div>
+
+	  	</div>
+	    <div class="form-group">
+	    	<div class="form-row align-items-center">
+			    <label for="name" class="col-3 col-sm-3 col-md-2">昵称:</label>
+		    	<input type="text" class="form-control col-9 col-sm-9 col-md-8" id="name" name="name" placeholder="请输入昵称" required>
+	    	</div>
+
+	  	</div>
+	    <div class="form-group">
+	    	<div class="form-row align-items-center">
+			    <label class="col-3 col-sm-3 col-md-2">性别:</label>
+		    	<div class="radio col-2 col-sm-2 col-md-1">
+				  <label><input checked type="radio" value="1" name="gender">&nbsp;男</label>
+				</div>
+				<div class="radio col-2 col-sm-2 col-md-1">
+				  <label><input type="radio" value="2" name="gender">&nbsp;女</label>
+				</div>
+	    	</div>
+	  	</div>
+	  	<div class="form-group">
+	  		<div class="form-row align-items-center">
+			    <label class="col-3 col-sm-3 col-md-2">段位:</label>
+				  <select id="level_type" name="level_type" class="form-control custom-select col-4 col-sm-4 col-md-3" required>
+				  	<option value="" selected>请选择</option>
+				  	<option value="1">专业</option>
+				  	<option value="2">业余</option>
+				  	<option value="3">无段位</option>
+				  </select>
+  				  <select id="level" name="level" class="form-control custom-select col-4 col-sm-4 col-md-3" style="display: none;">
+				  	<option value="" selected>请选择</option>
+				  </select>
+	  		</div>
+	  	</div>
+	  	<div class="form-group">
+	  		<div class="form-row align-items-center">
+			    <label for="introduction" class="col-3 col-sm-3 col-md-2">棋手<br/>介绍:</label>
+		    	<textarea class="form-control col-9 col-sm-9 col-md-8" name="introduction" id="introduction" placeholder="输入棋手介绍"></textarea>
+	  		</div>
+	  	</div>
+	  	<div class="form-group">
+	  		<div class="form-row align-items-center">
+			    <label for="email" class="col-3 col-sm-3 col-md-2">邮箱:</label>
+		    	<input type="email" class="form-control col-9 col-sm-9 col-md-8" id="email" name="email" placeholder="请输入您的邮箱" required>
+	  		</div>
+	  	</div>
+	  	<div class="form-group">
+	  		<div class="form-row align-items-center">
+	  			<label for="verify_code" class="col-3 col-sm-3 col-md-2">验证码:</label>
+		    	<input type="text" class="form-control col-4 col-sm-4 col-md-3" id="verify_code" name="verify_code" placeholder="点击刷新" required>
+		    	<div class="col-4 col-sm-4 col-md-3"><img src="{:captcha_src()}" style="cursor:pointer;width: 100px;height: 50px" alt="点击更换" title="点击更换" onclick="this.src='{:captcha_src()}?time='+Math.random()"/></div>
+	  		</div>
+	  	</div>
+	  	<div class="form-group">
+	  		<a href="{:url('admin/login/index')}">已有账号,前往登录！</a>
+	  	</div>
+	 		<button type="submit" class="btn btn-primary">注册</button>
+	</form>	
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+$(function(){
+	//围棋等级选择框动态处理
+	$('#level_type').change(function(){
+		var level_type = $(this).val();
+		var option = '';
+		for(i in weiqi_level){
+			if(i==level_type){
+				for(var j = 0 ,len = weiqi_level[i].length ; j < len ; j++){
+					option = option + '<option value="' + weiqi_level[i][j] + '">'+ weiqi_level[i][j] + '</option>';
+				}
+			}
+		}
+		$('#level').html(option);
+		if(level_type != 1 && level_type != 2){
+			$('#level').css({'display':'none'});
+
+		}else{
+			$('#level').css({'display':'block'});
+
+		}
+	});
+	ajaxForm('/admin/login/index','<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;注册成功，正在跳转至登录页');
+
+})
+</script>
+{/block}
