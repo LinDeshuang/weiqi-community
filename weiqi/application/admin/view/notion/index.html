@@ -33,7 +33,7 @@
 		  <div class="card-body">
 		    <h7 class="card-subtitle mb-2 text-muted"><i class="fa fa-clock-o"></i>&nbsp;{$nt.create_time}</h7>
 		    <p class="card-text">{$nt.notion_content}</p>
-		    <a href="{:url('admin/notion/delNotion',['id'=>$nt.id])}" class="btn btn-sm btn-danger" id="del"><i class="fa fa-trash"></i>&nbsp;删除</a>
+		    <a href="javascript:if(confirm('确定要删除吗？')){window.location.href='{:url('admin/notion/delNotion',['id'=>$nt.id])}';}" class="btn btn-sm btn-danger" id="del"><i class="fa fa-trash"></i>&nbsp;删除</a>
 		    <a class="btn btn-sm btn-primary text-light"><i class="fa fa-thumbs-o-up"></i>&nbsp;<span class="badge badge-light">{$nt.praise_count}</span></a>
 		    <a class="btn btn-sm btn-info text-light"><i class="fa fa-comment-o"></i>&nbsp;<span class="badge badge-light">{$nt.comment_count}</span></a>
 		  </div>

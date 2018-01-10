@@ -28,7 +28,7 @@ class Notion extends AdminBase
 */
     public function index()
     {
-    	$notion = $this->notion_model->where(['status'=>1,'user_id'=>$this->user_id])->order('create_time','desc')->paginate(8);
+    	$notion = $this->notion_model->where(['notion_status'=>1,'user_id'=>$this->user_id])->order('create_time','desc')->paginate(8);
     	$page = $notion->render();
     	$this->assign('user_id',$this->user_id);
     	$this->assign('notion',$notion);

@@ -6,48 +6,41 @@
 	    <a class="nav-link" href="{:url('index/index/index')}">棋谱大厅</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link active" >棋手说</a>
+	    <a class="nav-link active bg-dark" >棋手说</a>
 	  </li>
 	  </li>
 	</ul>
 	<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
 	    <strong>警告!</strong>
     </div>
-	{foreach name = 'notion_info' item = 'nt'}
-	<div class="card" style="margin: 5px auto;padding: 5px;" >
-	  	<div class="row">
-	  		<div class="col-3 col-sm-4 col-md-4">
-			    <img class="img-fluid rounded" title="棋手头像" alt="user-photo" src="{$nt.photo}">
-	  		</div>
-	  		<div class="col-9 col-sm-8 col-md-8">
-	  			<h7 class="card-subtitle mb-2 text-muted">
-	    			<i class="fa fa-user"></i>&nbsp;{$nt.user_name}
-	    		</h7>
-			    <p class="card-text">{$nt.notion_content}</p>
-			    <h7 class="card-subtitle mb-2 text-muted"><i class="fa fa-clock-o"></i>&nbsp;{:date('Y-m-d H:i',$nt.create_time)}</h7>
-	  		</div>
-	  	</div>
-	  	<div class="text-right">
-	    		<a class="btn btn-sm btn-light praiseBtn" notion-id = '{$nt.id}' aria-disabled = 'false'><i class="fa fa-thumbs-o-up"></i>&nbsp;<span class="badge badge-light" >{$nt.praise_count}</span></a>
-	    		<a class="btn btn-sm btn-dark text-light"><i class="fa fa-comment-o"></i>&nbsp;<span class="badge badge-light">{$nt.comment_count}</span></a>
-	  	</div>
+	<div class="input-group mb-3" style="margin: 10px 0px;">
+	  <select class="custom-select" id="orderBy">
+	    <option value="0" selected>最新发布</option>
+	    <option value="2">点击最多</option>
+	    <option value="2">点赞最多</option>
+	    <option value="3">评论最多</option>
+	  </select>
+  	  <input id="searchContent" type="text" class="form-control" placeholder="请输入搜索内容" aria-label="请输入搜索内容" aria-describedby="basic-addon2">
+	  <div class="input-group-append">
+	    <button class="btn btn-bg btn-outline-secondary" id="searchBtn" style="height:36px;"><i class="fa fa-search"></i></button>
+	  </div>
 	</div>
-	{/foreach}
+	<div id="notionData"></div>
 	<section class="alert alert-light text-center" role="alert" id="loadingFlag" style="display: none;"><i class="fa fa-spinner fa-pulse fa-2x fa-fw" ></i>&nbsp;正在加载</section>
 </div>
 {/block}
 {block name='js'}
 <script type="text/javascript">
-	var page = 2;
+	var page = 1;
 	var bodyH = $('body')[0].offsetHeight;
 	var isLoading = 0;
 	var newDate = new Date();
+	ajaxGetNotion("/index/index/notion");
 	$(function(){
 		$(window).scroll(function(){
 			$('#loadingFlag').css({'display':'block'});
 			if(!isLoading)
 			{
-				var content = '';
 				var top = $('#loadingFlag').offset().top;
 				var flagH = $('#loadingFlag').height();
 				var scrollTop = $(window).scrollTop();
@@ -56,62 +49,87 @@
 				if( scrollTop+viewH-flagH > top )
 				{
 					isLoading = 1;
-					$.ajax({
-						url:'{:url("index/index/notion")}'+'?page='+page,
-						method:'post',
-						dataType:'json',
-						success:function(retData){
-							var data = retData.data;
-							if(data != '')
-							{
-								for(var i = 0, len = data.length ; i < len ; i++)
-								{
-									newDate.setTime(data[i].create_time);
-									 content = content + '	<div class="card" style="margin: 5px auto;padding: 5px;" >\
-									  	<div class="row">\
-									  		<div class="col-3 col-sm-4 col-md-4">\
-											    <img class="img-fluid rounded" title="棋手头像" alt="user-photo" src="'+data[i].photo+'">\
-									  		</div>\
-									  		<div class="col-9 col-sm-8 col-md-8">\
-									  			<h7 class="card-subtitle mb-2 text-muted">\
-									    			<i class="fa fa-user"></i>&nbsp;'+data[i].user_name+'\
-									    		</h7>\
-											    <p class="card-text">'+data[i].notion_content+'</p>\
-											    <h7 class="card-subtitle mb-2 text-muted"><i class="fa fa-clock-o"></i>&nbsp;'+newDate.format('yyyy-mm-dd hh:mm')+'</h7>\
-									  		</div>\
-									  	</div>\
-									  	<div class="text-right">\
-									    		<a class="btn btn-sm btn-light praiseBtn" notion-id = "'+data[i].id+'" aria-disabled = "false" onclick="praise()"><i class="fa fa-thumbs-o-up"></i>&nbsp;<span class="badge badge-light" >'+data[i].praise_count+'</span></a>\
-									    		<a class="btn btn-sm btn-dark text-light"><i class="fa fa-comment-o"></i>&nbsp;<span class="badge badge-light">'+data[i].comment_count+'</span></a>\
-									  	</div>\
-									</div>';
-								}
-								$(content).insertBefore('#loadingFlag');
-								isLoading = 0;
-								page = retData.current_page+1;
-							}
-							else
-							{
-								$('#loadingFlag').html('这回真没了');
-								page--;
-							}
-							
-						}
-					});
+					ajaxGetNotion("/index/index/notion");
 				}
 			}
 		});
-		var praiseBtn = $('.praiseBtn');
-		for(var i = 0 , len = praiseBtn.length; i < len ; i++)
-		{
-			praiseBtn.eq(i).click(praise);
-		}
-		
+		$('#orderBy').change(function(){
+			page = 1;
+			$('#loadingFlag').html('<i class="fa fa-spinner fa-pulse fa-2x fa-fw" ></i>&nbsp;正在加载');
+			$('#notionData').html('');
+			ajaxGetNotion('/index/index/notion');
+		});
+		$('#searchBtn').click(function(){
+			page = 1;
+			if($('#searchContent').val() != '')
+			{
+				$('#loadingFlag').html('<i class="fa fa-spinner fa-pulse fa-2x fa-fw" ></i>&nbsp;正在加载');
+				$('#notionData').html('');
+				ajaxGetNotion('/index/index/notion');
+			}
+		});
+		// var praiseBtn = $('.praiseBtn');
+		// for(var i = 0 ,len = praiseBtn.length;i<len;i++ )
+		// {
+		// 	praiseBtn[i].click(function(){praise();});
+		// }	
 	})
-function  praise(){
-				if($(this).attr('aria-disabled') != 'true'){
-					var notion_id = $(this).attr('notion-id');
-					var eq = $('.praiseBtn').index($(this));
+function ajaxGetNotion(dataUrl)
+{
+	var orderBy = $('#orderBy').val();
+	var searchContent = $('#searchContent').val();
+	var content = '';
+	$.ajax({
+	url:dataUrl+'?page='+page,
+	method:'post',
+	data:{
+			'order_by' : orderBy,
+			'search_content' : searchContent
+		},
+	dataType:'json',
+	success:function(retData){
+		var data = retData.data;
+		if(data != '')
+		{
+			for(var i = 0, len = data.length ; i < len ; i++)
+			{
+				newDate.setTime(data[i].create_time);
+				 content = content + '	<div class="card" style="margin: 5px auto;padding: 5px;" >\
+				  	<div class="row">\
+				  		<div class="col-3 col-sm-4 col-md-4">\
+						    <a href="/index/index/userDetail?id='+data[i].user_id+'"><img class="img-fluid rounded" title="棋手头像" alt="user-photo" src="'+data[i].photo+'"></a>\
+				  		</div>\
+				  		<div class="col-9 col-sm-8 col-md-8">\
+				  			<h7 class="card-subtitle mb-2 text-muted">\
+				    			 <a href="/index/index/userDetail?id='+data[i].user_id+'">'+data[i].user_name+'</a>\
+				    		</h7>\
+						    <p class="card-text">'+data[i].notion_content+'</p>\
+						    <h7 class="card-subtitle mb-2 text-muted"><i class="fa fa-clock-o"></i>&nbsp;'+newDate.format('yyyy-MM-dd h:m')+'</h7>\
+				  		</div>\
+				  	</div>\
+				  	<div class="text-right">\
+				    		<a class="btn btn-sm btn-light praiseBtn" notion-id="'+data[i].id+'" aria-disabled = "false" onclick="praise(this)"><i class="fa fa-thumbs-o-up"></i>&nbsp;<span class="badge badge-light" >'+data[i].praise_count+'</span></a>\
+				    		<a href="/index/index/notionComment?id='+data[i].id+'" class="btn btn-sm btn-dark text-light"><i class="fa fa-comment-o"></i>&nbsp;<span class="badge badge-light">'+data[i].comment_count+'</span></a>\
+				  	</div>\
+				</div>';
+			}
+			$('#notionData').append(content);
+			isLoading = 0;
+			page = retData.current_page+1;
+		}
+		else
+		{
+			$('#loadingFlag').html('这回真没了');
+			page--;
+		}
+			
+		}
+	});
+}
+function  praise(obj){
+				if($(obj).attr('aria-disabled') != 'true'){
+					var notion_id =$(obj).attr('notion-id');
+					var eq = $('.praiseBtn').index($(obj));
 					$.ajax({
 						url: '/index/praise/notionPraise',
 						data:{
@@ -135,6 +153,7 @@ function  praise(){
 						}
 					}) 
 				}
+				return false;
 
 			}
 </script>

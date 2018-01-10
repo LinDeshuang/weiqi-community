@@ -40,12 +40,13 @@
 	</div>
 	<p class="text-center text-muted">总共{$manual.comment_count}条评论</p>
 	<div class="container">
-		{foreach name='comment' item='cm'}
+		{php}$sub_comment_id = 0;{/php}
+		{volist name='comment' id='cm' empty="<p class='text-center text-muted'>暂时没有评论，来谈谈你的看法吧!</p>" key="k"}
 		{if condition = "$cm.pid == 0"}
 				<div class="card" style="margin: 5px auto;">
 					<div class="card-body">
 						<h7 class="card-subtitle mb-2 text-muted">
-							<i class="fa fa-user"></i>&nbsp;{$cm.user_name}
+							<a href="{:url('index/index/userDetail',['id'=>$cm.user_id])}"><i class="fa fa-user"></i>&nbsp;{$cm.user_name}</a>
 							&nbsp;&nbsp;<button class="btn btn-sm btn-light replyBtn" data-toggle="modal" data-target="#commentModal" manual-id='{$cm.manual_id}' data-cm-id='{$cm.id}'><i class="fa fa-comment"></i></button>
 						</h7><br>
 						<h8 class="card-subtitle mb-2 text-muted">
@@ -53,15 +54,32 @@
 						</h8>
 						<div class="card-text">
 							{$cm.comment_content}
-						</div>
-					</div> 
-				</div>
+				{if condition = "isset($comment[$k]) && $comment[$k]['pid'] != 0"}
+					{php}$sub_comment_id++;{/php}
+					<p class="text-center "><a class="btn btn-light text-primary" data-toggle="collapse" href="#collapseSubComment{$sub_comment_id}" role="button" aria-expanded="false" aria-controls="collapseSubComment{$sub_comment_id}">
+						<i class="fa fa-angle-double-down"></i>
+					</a></p>
+					<div class="collapse" id="collapseSubComment{$sub_comment_id}">
+				{/if}
 				{else/}
-				<div class="alert alert-secondary" data-toggle="modal" data-target="#commentModal" manual-id='{$cm.manual_id}' data-cm-id='{$cm.id}'>
-					{$cm.user_name}&nbsp;@&nbsp;{$cm.origin_user}&nbsp;:&nbsp;{$cm.comment_content}
-				</div>
+					<div class="alert alert-secondary" data-toggle="modal" data-target="#commentModal" manual-id='{$cm.manual_id}' data-cm-id='{$cm.id}'>
+						{$cm.user_name}&nbsp;@&nbsp;{$cm.origin_user}&nbsp;:&nbsp;{$cm.comment_content}
+					</div>
+					{if condition = "isset($comment[$k]) && $comment[$k]['pid'] == 0"}
+					</div>
+					{/if}
 		{/if}
-		{/foreach}
+		{if condition = "!isset($comment[$k]) || $comment[$k]['pid'] == 0"}
+					</div>
+				</div> 
+			</div>
+		{/if}
+		{/volist}
+		{if condition="!empty($comment)"}
+				</div>
+			</div> 
+		</div>
+		{/if}
 	</div>
 <!--  模态框用于提交评论 !-->
 <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true" style="top: 30%;">
@@ -94,7 +112,7 @@
 <script type="text/javascript" src="__JS__/weiqi.js"></script>
 <script type="text/javascript">
 	ajaxForm('#','评论成功');
-
+	//模态框显示，改变表单隐藏值
 	$('#commentModal').on('show.bs.modal', function (event) {
 	  var button = $(event.relatedTarget) 
 	  var commentId = button.data('cm-id')
@@ -208,6 +226,7 @@
 
 		});
 	}
+	//点赞棋谱
 	$(function(){
 		$('#praiseBtn').click(function(){
 			if($(this).attr('aria-disabled') != 'true'){
