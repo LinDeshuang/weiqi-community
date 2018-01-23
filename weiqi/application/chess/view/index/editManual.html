@@ -28,11 +28,9 @@
 		    <a class="dropdown-item" href="#">
 		    	<button class="btn btn-dark" id="whiteChess" aria-disabled = 'false'>白棋</button>
 		    </a>
-			
 		  </div>
 		</div>
 		<button class="btn btn-light" id="backout" aria-disabled = 'false'>撤销</button>
-		<button class="btn btn-secondary disable" id="forward" aria-disabled = 'true'>恢复</button>
 	</div>
 	
     <div class="text-center bg-dark container" style="padding: 10px;">
@@ -80,7 +78,7 @@
 					}else if(data.errcode == '40100'){
 						topAlert(data.errmsg,'warning');
 					}else{
-						topAlert('未知错误','warning');
+						topAlert('未知错误，请重新登录后再试','warning');
 					}
 				}
 			});

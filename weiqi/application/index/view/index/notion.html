@@ -16,7 +16,7 @@
 	<div class="input-group mb-3" style="margin: 10px 0px;">
 	  <select class="custom-select" id="orderBy">
 	    <option value="0" selected>最新发布</option>
-	    <option value="2">点击最多</option>
+	    <option value="1">我关注的</option>
 	    <option value="2">点赞最多</option>
 	    <option value="3">评论最多</option>
 	  </select>
@@ -45,7 +45,7 @@
 				var flagH = $('#loadingFlag').height();
 				var scrollTop = $(window).scrollTop();
 				var viewH = $(window).height();
-				
+
 				if( scrollTop+viewH-flagH > top )
 				{
 					isLoading = 1;
@@ -72,7 +72,7 @@
 		// for(var i = 0 ,len = praiseBtn.length;i<len;i++ )
 		// {
 		// 	praiseBtn[i].click(function(){praise();});
-		// }	
+		// }
 	})
 function ajaxGetNotion(dataUrl)
 {
@@ -113,16 +113,21 @@ function ajaxGetNotion(dataUrl)
 				  	</div>\
 				</div>';
 			}
+
 			$('#notionData').append(content);
 			isLoading = 0;
 			page = retData.current_page+1;
+			if($('body')[0].offsetHeight == $(window).height())
+			{
+				$('#loadingFlag').html('就这么多了');
+			}
 		}
 		else
 		{
 			$('#loadingFlag').html('这回真没了');
-			page--;
+			page = retData.current_page-1;
 		}
-			
+
 		}
 	});
 }
@@ -151,7 +156,7 @@ function  praise(obj){
 								topAlert(retData.errmsg+'<a href="/admin/login/index">前往登录</a>','info');
 							}
 						}
-					}) 
+					})
 				}
 				return false;
 

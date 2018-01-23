@@ -9,6 +9,9 @@
 </style>
 {/block}
 {block name="main"}
+<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
+		<strong>警告!</strong>
+	</div>
 <section class="user-header">
 
 	<a class="text-center flex-item">
@@ -24,7 +27,7 @@
 	        </button>
 	      </div>
 	      <div class="modal-body text-center">
-	        <img src="{$user_info.photo}" class="img-thumbnail img-fluid"> 
+	        <img src="{$user_info.photo}" class="img-thumbnail img-fluid">
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
@@ -41,7 +44,7 @@
 	  </li>
 	  <li class="list-group-item">
 		  <h7 class="list-title"><i class="fa fa-genderless"></i>&nbsp;性别</h7>
-		  <p class="list-content">		    
+		  <p class="list-content">
 		  	{switch name="user_info.gender"}
 			{case value="1"}<i class="fa fa-mars"></i>&nbsp;男{/case}
 			{case value="2"}<i class="fa fa-venus"></i>&nbsp;女{/case}
@@ -71,9 +74,59 @@
 		  <p class="list-content">{$user_info.introduction}</p>
 	  </li>
 	</ul>
-	<a href="{$prefer_url}" class="btn btn-danger btn-bg" style="margin-top: 10px;">返回</a>
+	{if $is_attented}
+	<a href="" data-id = {$user_info.id} attention-type = '0' class="btn btn-warning btn-bg attention text-light" style="margin-top: 10px;"><i class="fa fa-remove"></i>&nbsp;取消关注</a>
+	{else/}
+	<a href="" data-id = {$user_info.id} attention-type = '1' class="btn btn-success btn-bg attention text-light" style="margin-top: 10px;"><i class="fa fa-plus"></i>&nbsp;关注</a>
+	{/if}
+	<a href="{$prefer_url}" class="btn btn-danger btn-bg" style="margin-top: 10px;"><i class="fa fa-reply"></i>&nbsp;返回</a>
 </section>
 {/block}
 {block name='js'}
+<script type="text/javascript">
+$(function(){
+	$('.attention').each(function(i){
+		$(this).click(function(){
+			var attention_id = $(this).attr('data-id');
+			var attention_type = $(this).attr('attention-type');
+			console.log(attention_type)
+			$.ajax({
+				url:'{:url("index/attention/attention")}',
+				data:{
+					'attention_id':attention_id,
+					'attention_type':attention_type
+				},
+				dataType:'json',
+				method:'post',
+				success:function(retData)
+				{
+					if(retData.errcode == 0)
+					{
+						topAlert(retData.errmsg,'success');
+						if(attention_type == '1')
+						{
+							$('.attention').eq(i).html('<i class="fa fa-remove"></i>&nbsp;取消关注').attr('attention-type','0').removeClass('btn-success').addClass('btn-warning');
 
+						}
+						else
+						{
+							$('.attention').eq(i).html('<i class="fa fa-plus"></i>&nbsp;关注').attr('attention-type','1').removeClass('btn-warning').addClass('btn-success');
+							
+						}
+					}
+					else
+					{
+						topAlert(retData.errmsg,'warning');
+					}
+				},
+				error:function()
+				{
+					topAlert('关注失败，网络错误','warning');
+				}
+			});
+			return false;
+		})
+	});
+});
+</script>
 {/block}

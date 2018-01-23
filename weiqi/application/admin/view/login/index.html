@@ -3,13 +3,13 @@
 {block name="header"}
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-      <h2>请登录</h2> 
+      <h2>请登录</h2>
   </div>
 </div>
 {/block}
 {block name="main"}
 <div class="container">
-	<form id="ajaxForm" class="text-center" method="post" action="{:url('admin/login/login')}">	
+	<form id="ajaxForm" class="text-center" method="post" action="{:url('admin/login/login')}">
 		<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
 				    <strong>警告!</strong>
 		</div>
@@ -40,11 +40,11 @@
 	  		<a href="{:url('admin/login/register')}">没有账号？点我注册！</a>
 	  	</div>
 	 		<button type="submit" class="btn btn-primary">登录</button>
-	</form>	
+	</form>
 </div>
 {/block}
 {block name="js"}
 <script type="text/javascript">
-ajaxForm('','<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;登录成功，正在跳转');
+ajaxForm('{$pre_url}','<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;登录成功，正在跳转');
 </script>
 {/block}

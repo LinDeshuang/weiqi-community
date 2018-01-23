@@ -16,6 +16,7 @@
 	    <option value="1">点击最多</option>
 	    <option value="2">点赞最多</option>
 	    <option value="3">评论最多</option>
+			<option value="4">我关注的</option>
 	  </select>
   	  <input id="searchContent" type="text" class="form-control" placeholder="请输入搜索内容" aria-label="请输入搜索内容" aria-describedby="basic-addon2">
 	  <div class="input-group-append">
@@ -42,7 +43,7 @@
 				var flagH = $('#loadingFlag').height();
 				var scrollTop = $(window).scrollTop();
 				var viewH = $(window).height();
-				
+
 				if( scrollTop+viewH-flagH > top )
 				{
 					isLoading = 1;
@@ -107,13 +108,17 @@
 				$('#manualData').append(content);
 				isLoading = 0;
 				page = retData.current_page+1;
+				if($('body')[0].offsetHeight == $(window).height())
+				{
+					$('#loadingFlag').html('就这么多了');
+				}
 			}
 			else
 			{
 				$('#loadingFlag').html('这回真没了');
-				page--;
+				page = retData.current_page-1;
 			}
-			
+
 		}
 	});
 	}

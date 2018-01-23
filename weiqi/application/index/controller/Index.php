@@ -18,12 +18,15 @@ class Index extends Controller
             switch ($data['order_by']) {
                 case 1:
                     $order = 'click_count';
-                    break; 
+                    break;
                 case 2:
                     $order = 'praise_count';
-                    break;  
+                    break;
                 case 3:
                     $order = 'comment_count';
+                    break;
+                case 4:
+                    $order = 'create_time';
                     break;
                 default:
                     $order = 'create_time';
@@ -39,10 +42,16 @@ class Index extends Controller
             {
                 $map = [
                     'manual_status'=>1,
-                    'manual_name'  =>['like','%'.$data['search_content'].'%'] 
+                    'manual_name'  =>['like','%'.$data['search_content'].'%']
                 ];
             }
-	        $manual_info = Db::view('WeiqiManual','id , user_id , manual_name , manual_intro , create_time , share_time , manual_status , delete_time , click_count , praise_count , comment_count')->view('User','name as user_name','User.id = Weiqimanual.user_id','RIGHT')->where($map)->whereNull('WeiqiManual.delete_time')->order($order,'desc')->paginate(5);
+            if($data['order_by']==4){
+              $manual_info = Db::view('WeiqiManual','id , user_id , manual_name , manual_intro , create_time , share_time , manual_status , delete_time , click_count , praise_count , comment_count')->view('User','name as user_name','User.id = Weiqimanual.user_id','RIGHT')->where($map)->where('WeiqiManual.user_id','IN',function($query){
+                $query->table('wq_attention_list')->where('user_id',Session::get('user_id'))->field('attention_id');
+              })->whereNull('WeiqiManual.delete_time')->order($order,'desc')->paginate(5);
+            }else{
+              $manual_info = Db::view('WeiqiManual','id , user_id , manual_name , manual_intro , create_time , share_time , manual_status , delete_time , click_count , praise_count , comment_count')->view('User','name as user_name','User.id = Weiqimanual.user_id','RIGHT')->where($map)->whereNull('WeiqiManual.delete_time')->order($order,'desc')->paginate(5);
+            }
 	    	exit(json_encode($manual_info,JSON_UNESCAPED_UNICODE));
     	}
     	else
@@ -63,10 +72,10 @@ class Index extends Controller
              switch ($data['order_by']) {
                 case 1:
                     $order = 'create_time';
-                    break; 
+                    break;
                 case 2:
                     $order = 'praise_count';
-                    break;  
+                    break;
                 case 3:
                     $order = 'comment_count';
                     break;
@@ -84,10 +93,16 @@ class Index extends Controller
             {
                 $map = [
                     'notion_status'=>1,
-                    'notion_content'  =>['like','%'.$data['search_content'].'%'] 
+                    'notion_content'  =>['like','%'.$data['search_content'].'%']
                 ];
             }
-            $notion_info = Db::view('Notion','id , user_id , create_time , notion_content , notion_status , delete_time , praise_count, comment_count')->view('User','name as user_name , photo','User.id = Notion.user_id','RIGHT')->where($map)->whereNull('Notion.delete_time')->order($order,'desc')->paginate(7);
+            if($data['order_by']==1){
+              $notion_info = Db::view('Notion','id , user_id , create_time , notion_content , notion_status , delete_time , praise_count, comment_count')->view('User','name as user_name , photo','User.id = Notion.user_id','RIGHT')->where($map)->where('Notion.user_id','IN',function($query){
+                $query->table('wq_attention_list')->where('user_id',Session::get('user_id'))->field('attention_id');
+              })->whereNull('Notion.delete_time')->order($order,'desc')->paginate(7);
+            }else{
+              $notion_info = Db::view('Notion','id , user_id , create_time , notion_content , notion_status , delete_time , praise_count, comment_count')->view('User','name as user_name , photo','User.id = Notion.user_id','RIGHT')->where($map)->whereNull('Notion.delete_time')->order($order,'desc')->paginate(7);
+            }
             exit(json_encode($notion_info,JSON_UNESCAPED_UNICODE));
         }
         else
@@ -118,7 +133,7 @@ class Index extends Controller
         $this->assign('notion',$notion);
         $this->assign('notion_comment',$notion_comment);
         return $this->fetch();
-    } 
+    }
     /**
     *演示棋谱
     */
@@ -157,8 +172,18 @@ class Index extends Controller
     {
         $user_info = Db::name('user')->where('id',$id)->find();
         $preUrl = $_SERVER['HTTP_REFERER'];
+        $current_user_id = Session::get('user_id');
+        if(Db::name('attentionList')->where(['user_id'=>$current_user_id,'attention_id'=>$id])->find())
+        {
+          $is_attented = 1;
+        }
+        else
+        {
+          $is_attented = 0;
+        }
         $this->assign('user_info',$user_info);
         $this->assign('prefer_url',$preUrl);
+        $this->assign('is_attented',$is_attented);
         return $this->fetch();
     }
 }

@@ -19,7 +19,19 @@ class AdminBase extends Controller
         $this->assign('user_account',$user_account);
         if(!$login_res)
         {
-            $this->error('尚未登录或登录已失效，正在前往登录页面','admin/login/index');
+            $preUrl = $_SERVER['HTTP_REFERER'];
+            // $pattern = '/admin\/login\/index/';
+            // $pos = preg_match($pattern,$preUrl);
+
+            $pos = stripos($preUrl,'admin/login/index/pre_url/');
+
+            //重复进入login页的preUrl处理
+            if($pos)
+            {
+              $preUrl = substr($preUrl,0,strlen($preUrl)-5);//去掉.html
+              $preUrl = urldecode(urldecode(substr($preUrl,$pos+26)));//取得真正的preUrl
+            }
+            $this->error('尚未登录或登录已失效','admin/login/index?pre_url='.urlencode(urlencode($preUrl)),30);
         }
     }
 }

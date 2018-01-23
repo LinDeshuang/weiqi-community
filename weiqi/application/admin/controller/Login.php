@@ -25,9 +25,9 @@ class Login extends Controller
 /**
 *登录页面
 */
-    public function index()
+    public function index($pre_url = '')
     {
-    	return $this->fetch();
+    	return $this->fetch('index',['pre_url'=>urldecode($pre_url)]);
     }
 /**
 *注册
@@ -74,7 +74,7 @@ class Login extends Controller
 	{
 		if($this->request->isPost())
 		{
-			$data = $this->request->post(); 
+			$data = $this->request->post();
 			$res = captcha_check($data['verify_code']);
 			if(!$res)
 			{
@@ -102,7 +102,7 @@ class Login extends Controller
 						$errCode = '40100';
 						$errMsg  = '登录失败，密码错误';
 					}
-	
+
 				}
 				else
 				{
@@ -112,7 +112,7 @@ class Login extends Controller
 			}
 			exit(json_encode([
 							'errcode' => $errCode,
-							'errmsg'  => $errMsg
+							'errmsg'  => $errMsg,
 						],JSON_UNESCAPED_UNICODE));
 
 		}

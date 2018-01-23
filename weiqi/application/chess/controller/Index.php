@@ -11,9 +11,9 @@ use app\common\validate\WeiqiManual as weiqi_manual_validate;
 
 class Index extends AdminBase
 {
-	protected $user_id;
-    protected $weiqi_manual_model;
-    protected $weiqi_manual_validate;
+  protected $user_id;
+  protected $weiqi_manual_model;
+  protected $weiqi_manual_validate;
 	protected function _initialize()
 	{
 		parent::_initialize();
@@ -52,7 +52,7 @@ class Index extends AdminBase
                 {
                     $res = $this->weiqi_manual_model->allowField(true)->save($data);
                 }
-                
+
                 if($res)
                 {
                     $errMsg = '保存成功';
