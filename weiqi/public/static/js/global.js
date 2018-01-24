@@ -39,7 +39,7 @@ function ajaxForm(redirect_url,msg){
 					if(redirect_url == ''){
 						  setTimeout(function(){window.history.back();},1000);
 					}else if(redirect_url == '#'){
-							setTimeout(function(){window.location.relaod()},1000);
+							setTimeout(function(){window.location.reload()},1000);
 					}else{
 							setTimeout(function(){window.location.href = redirect_url;},1000);
 					}
