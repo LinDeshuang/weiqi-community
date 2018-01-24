@@ -46,11 +46,11 @@ class Index extends Controller
                 ];
             }
             if($data['order_by']==4){
-              $manual_info = Db::view('WeiqiManual','id , user_id , manual_name , manual_intro , create_time , share_time , manual_status , delete_time , click_count , praise_count , comment_count')->view('User','name as user_name','User.id = Weiqimanual.user_id','RIGHT')->where($map)->where('WeiqiManual.user_id','IN',function($query){
+              $manual_info = Db::view('WeiqiManual','id , user_id , manual_name , manual_intro , create_time , share_time , manual_status , delete_time , click_count , praise_count , comment_count')->view('User','name as user_name','User.id = WeiqiManual.user_id','RIGHT')->where($map)->where('WeiqiManual.user_id','IN',function($query){
                 $query->table('wq_attention_list')->where('user_id',Session::get('user_id'))->field('attention_id');
               })->whereNull('WeiqiManual.delete_time')->order($order,'desc')->paginate(5);
             }else{
-              $manual_info = Db::view('WeiqiManual','id , user_id , manual_name , manual_intro , create_time , share_time , manual_status , delete_time , click_count , praise_count , comment_count')->view('User','name as user_name','User.id = Weiqimanual.user_id','RIGHT')->where($map)->whereNull('WeiqiManual.delete_time')->order($order,'desc')->paginate(5);
+              $manual_info = Db::view('WeiqiManual','id , user_id , manual_name , manual_intro , create_time , share_time , manual_status , delete_time , click_count , praise_count , comment_count')->view('User','name as user_name','User.id = WeiqiManual.user_id','RIGHT')->where($map)->whereNull('WeiqiManual.delete_time')->order($order,'desc')->paginate(5);
             }
 	    	exit(json_encode($manual_info,JSON_UNESCAPED_UNICODE));
     	}
@@ -139,7 +139,7 @@ class Index extends Controller
     */
     public function playManual($id)
     {
-        $manual = Db::view('WeiqiManual','id , user_id , manual_name , manual_intro , manual_data , create_time , share_time , manual_status , click_count ,praise_count,comment_count')->view('User','id as user_id, name as user_name','User.id = Weiqimanual.user_id','RIGHT')->where(['WeiqiManual.id'=>$id])->find();
+        $manual = Db::view('WeiqiManual','id , user_id , manual_name , manual_intro , manual_data , create_time , share_time , manual_status , click_count ,praise_count,comment_count')->view('User','id as user_id, name as user_name','User.id = WeiqiManual.user_id','RIGHT')->where(['WeiqiManual.id'=>$id])->find();
         //点击量增加机制
         if( !Session::has($manual['user_id'].'_'.$id) )
             {
