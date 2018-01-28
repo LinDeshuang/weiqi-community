@@ -21,6 +21,7 @@
   </div>
 </div>
 {block name="main"}{/block}
+<div class="btn btn-md btn-dark" id="to-top" style="display: none;"><i class="fa fa-lg fa-arrow-circle-up"></i></div>
 <section class="fix-bottom"></section>
 <nav class="bottom-bar bg-secondary">
 	<div class="row bg-light">
@@ -40,5 +41,17 @@
 <script type="text/javascript" src="__JS__/popper.min.js"></script>
 <script type="text/javascript" src="__JS__/bootstrap.min.js"></script>
 <script type="text/javascript" src="__JS__/global.js"></script>
+<script type="text/javascript">
+  $(window).scroll(function(){
+    if($(this).scrollTop()<=$(this).height()){
+      $('#to-top').css({'display':'none'});
+    }else{
+      $('#to-top').css({'display':'block'});
+    }
+  });
+  $('#to-top').click(function(){
+    $('html,body').animate({'scroll-top':'0px'},'slow');
+  });
+</script>
 {block name="js"}{/block}
 </html>

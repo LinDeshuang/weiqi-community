@@ -19,7 +19,7 @@ class AdminBase extends Controller
         $this->assign('user_account',$user_account);
         if(!$login_res)
         {
-            $preUrl = $_SERVER['HTTP_REFERER'];
+            $preUrl = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
             // $pattern = '/admin\/login\/index/';
             // $pos = preg_match($pattern,$preUrl);
 

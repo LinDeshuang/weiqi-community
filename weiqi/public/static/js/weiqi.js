@@ -61,11 +61,14 @@ window.onload = function(){
 		oEvent.preventDefault();
 	    var x = oEvent.offsetX-Math.floor( CELL / 3 );
     	var y = oEvent.offsetY-Math.floor( CELL / 3 );
+	    var i = Math.floor( x / CELL );
+		var j = Math.floor( y / CELL );
 		onOneStep( context , CELL , RADIUS , x , y , chess );
 		if(absoluteChess != 2){
 			chess = absoluteChess;
 		}else{
-			chess = !chess;
+				
+				chess = !chessStatusData[i][j];
 		}
     	
 	}
@@ -102,13 +105,21 @@ window.onload = function(){
 
 	//下棋：对弈
 	oPlayChess.onclick = function (){
+		    absoluteChess = 2;
 			wqBoard.onclick = function (e){
 			var oEvent = e||event; 
 			oEvent.preventDefault();
 		    var x = oEvent.offsetX-Math.floor( CELL / 3 );
 	    	var y = oEvent.offsetY-Math.floor( CELL / 3 );
+		    var i = Math.floor( x / CELL );
+    		var j = Math.floor( y / CELL );
 			onOneStep( context , CELL , RADIUS , x , y , chess );
-	    	chess = !chess;
+			if(absoluteChess != 2){
+					chess = absoluteChess;
+				}else{
+						
+					chess = !chessStatusData[i][j];
+				}
 		}
 		this.setAttribute('class','btn btn-secondary disable') ;
 		this.setAttribute('aria-disabled','true');

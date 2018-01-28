@@ -32,6 +32,7 @@ class Comment extends Controller
     */
     public function manualComment()
     {
+        // var_dump($this->request->post());
         if($this->request->isPost())
         {
             if(!$this->user_id)

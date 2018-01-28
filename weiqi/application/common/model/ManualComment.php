@@ -13,7 +13,7 @@ Class ManualComment extends Model
 	//处理评论内容
     protected function setCommentContentAttr($value)
     {
-        return htmlspecialchars_decode($value);
+        return base64_encode($value);
     }
 
 }

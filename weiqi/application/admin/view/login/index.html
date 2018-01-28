@@ -1,7 +1,7 @@
 {extend name="base"/}
 {block name="top-nav"}<span></span>{/block}
 {block name="header"}
-<div class="jumbotron jumbotron-fluid">
+<div class="jumbotron jumbotron-fluid text-center bg-primary text-light">
   <div class="container">
       <h2>请登录</h2>
   </div>
@@ -32,7 +32,7 @@
 	  			<label for="verify_code" class="col-3 col-sm-3 col-md-2">验证码:</label>
 		    	<input type="text" class="form-control col-4 col-sm-4 col-md-3" id="verify_code" name="verify_code" placeholder="点击刷新" required>
 		    	<div class="col-4 col-sm-4 col-md-3">
-		    		<img src="{:captcha_src()}" style="cursor:pointer;width: 100px;height: 50px" alt="点击更换" title="点击更换" onclick="this.src='{:captcha_src()}?time='+Math.random()"/>
+		    		<img src="{:captcha_src()}" style="cursor:pointer;width: 100px;height: 50px" alt="点击更换" title="点击更换" onclick="this.src='{:captcha_src()}?time='+Math.random();document.getElementById('verify_code').focus();"/>
 		    	</div>
 	  		</div>
 	  	</div>

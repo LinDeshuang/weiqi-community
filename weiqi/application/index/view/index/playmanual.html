@@ -1,9 +1,9 @@
 {extend name="base"/}
 {block name="main"}
 	<nav aria-label="breadcrumb">
-	  <ol class="breadcrumb">
+	  <ol class="breadcrumb bg-dark" style="margin-top: 10px;">
 	    <li class="breadcrumb-item"><a href="{:url('index/index/index')}">棋谱大厅</a></li>
-	    <li class="breadcrumb-item active">观摩棋谱</li>
+	    <li class="breadcrumb-item text-light">观摩棋谱</li>
 	  </ol>
 	</nav>
 	<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
@@ -53,7 +53,7 @@
 							<i class="fa fa-clock-o"></i>&nbsp;{:date('Y:m:d H:i',$cm.create_time)}
 						</h8>
 						<div class="card-text">
-							{$cm.comment_content}
+							{:base64_decode($cm.comment_content)}
 				{if condition = "isset($comment[$k]) && $comment[$k]['pid'] != 0"}
 					{php}$sub_comment_id++;{/php}
 					<p class="text-center "><a class="btn btn-light text-primary" data-toggle="collapse" href="#collapseSubComment{$sub_comment_id}" role="button" aria-expanded="false" aria-controls="collapseSubComment{$sub_comment_id}">
@@ -63,7 +63,7 @@
 				{/if}
 				{else/}
 					<div class="alert alert-secondary" data-toggle="modal" data-target="#commentModal" manual-id='{$cm.manual_id}' data-cm-id='{$cm.id}'>
-						{$cm.user_name}&nbsp;@&nbsp;{$cm.origin_user}&nbsp;:&nbsp;{$cm.comment_content}
+						{$cm.user_name}&nbsp;@&nbsp;{$cm.origin_user}&nbsp;:&nbsp;{:base64_decode($cm.comment_content)}
 					</div>
 					{if condition = "isset($comment[$k]) && $comment[$k]['pid'] == 0"}
 					</div>

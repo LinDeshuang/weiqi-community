@@ -1,10 +1,10 @@
 {extend name="base"/}
 {block name="main"}
 	<nav aria-label="breadcrumb">
-	  <ol class="breadcrumb">
+	  <ol class="breadcrumb bg-dark" style="margin-top: 10px;">
 	    <li class="breadcrumb-item"><a href="{:url('chess/index/index')}">围棋打谱</a></li>
 	    <li class="breadcrumb-item" aria-current="page"><a href="{:url('chess/index/manualManage')}">我的棋谱</a></li>
-	    <li class="breadcrumb-item active" aria-current="page">编辑棋谱</li>
+	    <li class="breadcrumb-item text-light" aria-current="page">编辑棋谱</li>
 	  </ol>
 	</nav>
 	<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">

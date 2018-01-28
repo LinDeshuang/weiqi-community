@@ -2,9 +2,9 @@
 {block name="main"}
 <div class="container">
 	<nav aria-label="breadcrumb">
-	  <ol class="breadcrumb">
+	  <ol class="breadcrumb bg-dark" style="margin-top: 10px;">
 	    <li class="breadcrumb-item"><a href="{:url('index/index/notion')}">棋手说</a></li>
-	    <li class="breadcrumb-item active" aria-current="page">评论详情</li>
+	    <li class="breadcrumb-item  text-light" aria-current="page">评论详情</li>
 	  </ol>
 	</nav>
 	<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
@@ -38,7 +38,7 @@
 								<i class="fa fa-clock-o"></i>&nbsp;{:date('Y:m:d H:i',$nc.create_time)}
 							</h8>
 							<div class="card-text">
-								{$nc.comment_content}
+								{:base64_decode($nc.comment_content)}
 					{if condition = "isset($notion_comment[$k]) && $notion_comment[$k]['pid'] != 0"}
 						{php}$sub_comment_id++;{/php}
 						<p class="text-center "><a class="btn btn-light text-primary" data-toggle="collapse" href="#collapseSubComment{$sub_comment_id}" role="button" aria-expanded="false" aria-controls="collapseSubComment{$sub_comment_id}">
@@ -48,7 +48,7 @@
 					{/if}
 					{else/}
 						<div class="alert alert-secondary" data-toggle="modal" data-target="#commentModal"  data-nc-id='{$nc.id}'>
-							{$nc.user_name}&nbsp;@&nbsp;{$nc.origin_user}&nbsp;:&nbsp;{$nc.comment_content}
+							{$nc.user_name}&nbsp;@&nbsp;{$nc.origin_user}&nbsp;:&nbsp;{:base64_decode($nc.comment_content)}
 						</div>
 						{if condition = "isset($notion_comment[$k]) && $notion_comment[$k]['pid'] == 0"}
 							</div>

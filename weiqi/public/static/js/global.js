@@ -28,32 +28,34 @@ function topAlert(msg,type)
 */
 function ajaxForm(redirect_url,msg){
 		$('#ajaxForm').submit(function(){
-		$.ajax({
-			url:$(this).attr('action'),
-			data:$(this).serialize(),
-			method:'post',
-			dataType:'json',
-			success:function(data){
-				if(data.errcode == 0){
-					topAlert(msg,'success');
-					if(redirect_url == ''){
-						  setTimeout(function(){window.history.back();},1000);
-					}else if(redirect_url == '#'){
+			$(this).find('button[type=submit]').attr('disabled',true).addClass('disabled');
+			$.ajax({
+				url:$(this).attr('action'),
+				data:$(this).serialize(),
+				method:'post',
+				dataType:'json',
+				success:function(data){
+					if(data.errcode == 0){
+						topAlert(msg,'success');
+						if(redirect_url == ''){
+							setTimeout(function(){window.history.back();},1000);
+						}else if(redirect_url == '#'){
 							setTimeout(function(){window.location.reload()},1000);
-					}else{
+						}else{
 							setTimeout(function(){window.location.href = redirect_url;},1000);
+						}
+					}else if(data.errcode == '40200'){
+						topAlert(data.errmsg.msg,'warning');
+						$('input[name='+data.errmsg.name+']').focus();
+					}else if(data.errcode == '40100'){
+						topAlert(data.errmsg,'warning');
+					}else{
+						topAlert('未知错误','warning');
 					}
-				}else if(data.errcode == '40200'){
-					topAlert(data.errmsg.msg,'warning');
-					$('input[name='+data.errmsg.name+']').focus();
-				}else if(data.errcode == '40100'){
-					topAlert(data.errmsg,'warning');
-				}else{
-					topAlert('未知错误','warning');
+					setTimeout(function(){$('#ajaxForm').find('button[type=submit]').attr('disabled',false).removeClass('disabled');},1500);
 				}
-			}
-		});
-		return false;
+			});
+			return false;
 	});
 }
 	//时间格式转换
