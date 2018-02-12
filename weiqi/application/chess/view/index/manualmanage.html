@@ -24,7 +24,7 @@
 	    	<a href="{:url('chess/index/playManual',['id'=>$mnl.id])}" class="btn btn-sm btn-info"><i class="fa fa-eye"></i>&nbsp;演示</a>
 		</h3>
 	    <h7 class="card-subtitle mb-2 text-muted"><i class="fa fa-clock-o"></i>&nbsp;{$mnl.create_time}</h7>
-	    <p class="card-text">{:mb_substr($mnl.manual_intro,0,20)}{if mb_strlen($mnl.manual_intro) > 20 }......{/if}</p>
+	    <p class="card-text">{:mb_substr($mnl.manual_intro,0,20,'utf-8')}{if mb_strlen($mnl.manual_intro,'utf-8') > 20 }......{/if}</p>
 	    <a href="{:url('chess/index/editManual',['id'=>$mnl.id])}" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i>&nbsp;编辑</a>
 	    <a href="javascript:if(confirm('确定要删除吗？')){window.location.href='{:url('chess/index/delManual',['id'=>$mnl.id])}';}" class="btn btn-sm btn-danger" id="del"><i class="fa fa-trash"></i>&nbsp;删除</a>
 	    {if condition='$mnl.manual_status != 1'}
