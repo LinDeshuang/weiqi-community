@@ -1,0 +1,5 @@
+.user-header{width: 100%;height: 10%;padding-top:3%;background-color: #343a40;display: flex; flex-direction: row;justify-content:space-around;align-items: baseline;}
+.user-header > a{padding:5px;width: 90px;height: 90px;display:block;border-radius: 50%;background-color: #ffffff;z-index: 500;}
+.user-header > a > img{width: 80px;height: 80px;border-radius: 50%;}
+.list-group .list-content{margin-top:3px;padding: 3px;width: 100%;border-radius: 5px;border-bottom:solid 1px #007bff;}
+.list-group .list-title{padding:5px;display:block;color:#ffffff;width: 100%;border-radius: 5px; border: solid 1px #aaaaaa;background-color:#007bff; }
