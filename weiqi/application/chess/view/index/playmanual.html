@@ -1,0 +1,139 @@
+{extend name="base"/}
+{block name="main"}
+	<nav aria-label="breadcrumb">
+	  <ol class="breadcrumb bg-dark" style="margin-top: 10px;">
+	    <li class="breadcrumb-item"><a href="{:url('chess/index/index')}">围棋打谱</a></li>
+	    <li class="breadcrumb-item" aria-current="page"><a href="{:url('chess/index/manualManage')}">我的棋谱</a></li>
+	    <li class="breadcrumb-item text-light" aria-current="page">打谱演示</li>
+	  </ol>
+	</nav>
+	<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
+	    <strong>警告!</strong>
+    </div>
+
+	<canvas id="wqBoard"></canvas>
+	<div class="text-center bg-dark wqFuncBar">
+		<button class="btn btn-sm btn-light" id="playManual" aria-disabled = 'false'>棋谱演示</button>
+		<button class="btn btn-sm btn-secondary disable" id="stopPlay" aria-disabled = 'true'>停止演示</button>
+		<button class="btn btn-sm btn-secondary disable" id="preP" aria-disabled = 'true'>上一步</button>
+		<button class="btn btn-sm btn-secondary disable" id="nextP" aria-disabled = 'true'>下一步</button>
+	</div>
+	<div class="card">
+		<div class="card-body">
+		<h4 class="card-title">{$manual.manual_name}</h4>
+		<h6 class="card-subtitle mb-2 text-muted">{$manual.create_time}</h6>
+		<p class="card-text">简介：&nbsp;{$manual.manual_intro}</p>
+		</div>
+	</div>
+{/block}
+{block name='js'}
+<script type="text/javascript" src="__JS__/weiqi.js"></script>
+<script type="text/javascript">
+	var sqlData = JSON.parse('{$manual.manual_data}');
+	var len = sqlData.length;
+	var step = 0;
+	//覆盖window.onload
+	window.onload = function(){
+		//棋盘初始化
+		wqBoardInit( wqBoard , COL , CELL , RADIUS , CANVAS_WIDTH );
+		//如果curData不为空则初始化棋盘时把棋子数据显示出来
+		if( sqlData != ''){
+			for(var i = 0,len = sqlData.length ; i < len ; i++){
+					if( sqlData[i].status != -1 ){
+
+						oneStep(context , CELL , RADIUS , sqlData[i].x , sqlData[i].y , sqlData[i].status);
+					}else{
+						clearChess( context , sqlData[i].x , sqlData[i].y , CELL , RADIUS );
+						chessStatusData[sqlData[i].x][sqlData[i].y] = 2;
+						curData.push({'x':sqlData[i].x,'y':sqlData[i].y,'status':-1});
+					}
+				}
+		}
+		wqBoard.onclick = function(e){
+			e.preventDefault();
+		}
+				$('#playManual').click(function(){
+			if($(this).attr('aria-disabled') == 'false')
+			{
+				wqBoardInit( wqBoard , COL , CELL , RADIUS , CANVAS_WIDTH );
+				//初始化围棋位置数据
+				for(var i = 0 ; i < 19 ; i++){
+					chessStatusData[i] = [];
+					for(var j = 0 ; j < 19 ; j++){
+						chessStatusData[i][j] = 2;
+					}
+				}
+				$(this).attr('class','btn btn-sm btn-secondary disable').attr('aria-disabled','true');
+				$('#stopPlay').attr('class','btn btn-sm btn-light').attr('aria-disabled','false');
+				$('#preP').attr('class','btn btn-sm btn-light').attr('aria-disabled','false');
+				$('#nextP').attr('class','btn btn-sm btn-light').attr('aria-disabled','false');				
+			}
+
+		})
+		$('#stopPlay').click(function(){
+			if($(this).attr('aria-disabled') == 'false')
+			{
+				step = 0;
+				curData = [];
+				wqBoardInit( wqBoard , COL , CELL , RADIUS , CANVAS_WIDTH );
+				for(var i = 0,len = sqlData.length ; i < len ; i++){
+					if( sqlData[i].status != -1 ){
+
+						oneStep(context , CELL , RADIUS , sqlData[i].x , sqlData[i].y , sqlData[i].status);
+					}else{
+						clearChess( context , sqlData[i].x , sqlData[i].y , CELL , RADIUS );
+						chessStatusData[sqlData[i].x][sqlData[i].y] = 2;
+						curData.push({'x':sqlData[i].x,'y':sqlData[i].y,'status':-1});
+					}
+				}
+				$(this).attr('class','btn btn-sm btn-secondary disable').attr('aria-disabled','true');
+				$('#playManual').attr('class','btn btn-sm btn-light').attr('aria-disabled','false');
+				$('#preP').attr('class','btn btn-sm btn-secondary disable').attr('aria-disabled','true');
+				$('#nextP').attr('class','btn btn-sm btn-secondary disable').attr('aria-disabled','true');
+			}
+
+		})
+
+		$('#preP').click(function(){
+			if($(this).attr('aria-disabled') == 'false')
+			{
+				if(step >= 0)
+				{
+					if( sqlData[step].status != -1 ){
+						clearChess( context , sqlData[step].x , sqlData[step].y , CELL , RADIUS );
+						chessStatusData[sqlData[step].x][sqlData[step].y] = 2;
+					}else{
+						oneStep(context , CELL , RADIUS , sqlData[step].x , sqlData[step].y , sqlData[step].status);
+					}
+						step--;
+				}
+				if( step == -1)
+				{
+					step = 0 ; 
+				}
+			}
+
+		})
+		$('#nextP').click(function(){
+			if($(this).attr('aria-disabled') == 'false')
+			{
+				if(step < len)
+				{
+					if( sqlData[step].status != -1 ){
+						oneStep(context , CELL , RADIUS , sqlData[step].x , sqlData[step].y , sqlData[step].status);
+					}else{
+						clearChess( context , sqlData[step].x , sqlData[step].y , CELL , RADIUS );
+						chessStatusData[sqlData[step].x][sqlData[step].y] = 2;
+					}
+					step++;
+				}
+				if( step == len)
+				{
+					step = len-1 ; 
+				}
+			}
+
+		});
+	}
+</script>
+{/block}

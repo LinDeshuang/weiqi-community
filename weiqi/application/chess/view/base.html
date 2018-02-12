@@ -1,0 +1,35 @@
+<html>
+<head>
+  {include file='../application/common/view/head.html' /}
+	{block name="css"}{/block}
+</head>
+<body>
+{block name="header"}
+<header class="jumbotron jumbotron-fluid" style="margin-bottom: 5px;">
+  <div class="container head-title">
+      <h2>围棋打谱系统</h2> 
+  </div>
+</header>
+{/block}
+{block name="main"}{/block}
+<section class="fix-bottom"></section>
+<nav class="bottom-bar bg-secondary">
+	<div class="row bg-light">
+     	<div class="col-4 col-sm-4 col-md-4 col-lg-4 btn btn-outline-light bg-dark text-light btn-md">
+     		<i class="fa fa-adjust fa-lg"></i>&nbsp;围棋打谱
+     	</div>
+  		<div class="col-4 col-sm-4 col-md-4 col-lg-4 text-dark btn btn-outline-light btn-sm">
+  			<a class="" href="{:url('index/index/index')}"><i class="fa fa-home fa-lg"></i>&nbsp;棋谱交流</a>
+  		</div>
+  		<div class="col-4 col-sm-4 col-md-4 col-lg-4 btn btn-outline-light text-dark btn-sm">
+  			<a href="{:url('admin/index/index')}"><i class="fa fa-street-view fa-lg"></i>&nbsp;我是棋手</a>
+  		</div>
+	</div>
+</nav>
+</body>
+<script type="text/javascript" src="__JS__/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__JS__/popper.min.js"></script>
+<script type="text/javascript" src="__JS__/bootstrap.min.js"></script>
+<script type="text/javascript" src="__JS__/global.js"></script>
+{block name="js"}{/block}
+</html>

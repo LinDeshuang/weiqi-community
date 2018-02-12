@@ -1,0 +1,108 @@
+{extend name="base"/}
+{block name="main"}
+<div class="container">
+	<nav aria-label="breadcrumb">
+	  <ol class="breadcrumb bg-dark" style="margin-top: 10px;">
+	    <li class="breadcrumb-item"><a href="{:url('index/index/notion')}">棋手说</a></li>
+	    <li class="breadcrumb-item  text-light" aria-current="page">评论详情</li>
+	  </ol>
+	</nav>
+	<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
+	    <strong>警告!</strong>
+    </div>
+	<div class="card card-single">
+		<div class="card-body">
+		    <a href="{:url('index/index/userDetail',['id'=>$notion.user_id])}"><img class="img-fluid notion-photo-r" title="棋手头像" alt="user-photo" src="{$notion.photo}"></a>
+			<h7 class="card-subtitle mb-2 text-muted">
+			<a href="{:url('index/index/userDetail',['id'=>$notion.user_id])}"><i class="fa fa-user"></i>&nbsp;{$notion.user_name}</a>
+    		</h7>
+		    <p class="card-text">{$notion.notion_content}</p>
+		    <h7 class="card-subtitle mb-2 text-muted"><i class="fa fa-clock-o"></i>&nbsp;{:date('Y-m-d H:i',$notion.create_time)}</h7>
+    	  	<div class="text-center" style="margin: 10px auto;">
+    			<a class="btn btn-sm btn-dark text-light"  data-toggle="modal" data-target="#commentModal" data-cm-id='0'><i class="fa fa-comment-o"></i>&nbsp;<span class="badge badge-light">评论</span></a>
+  			</div>
+		</div>
+	</div>
+	<p class="text-center text-muted">总共{$notion.comment_count}条评论</p>
+		<div class="container">
+			{php}$sub_comment_id = 0;{/php}
+			{volist name='notion_comment' id='nc' empty="<p class='text-center text-muted'>暂时没有评论，来谈谈你的看法吧!</p>" key="k"}
+			{if condition = "$nc.pid == 0"}
+					<div class="card" style="margin: 5px auto;">
+						<div class="card-body">
+							<h7 class="card-subtitle mb-2 text-muted">
+								<i class="fa fa-user"></i>&nbsp;{$nc.user_name}
+								&nbsp;&nbsp;<button class="btn btn-sm btn-light replyBtn" data-toggle="modal" data-target="#commentModal" data-nc-id='{$nc.id}'><i class="fa fa-comment"></i></button>
+							</h7><br>
+							<h8 class="card-subtitle mb-2 text-muted">
+								<i class="fa fa-clock-o"></i>&nbsp;{:date('Y:m:d H:i',$nc.create_time)}
+							</h8>
+							<div class="card-text">
+								{:base64_decode($nc.comment_content)}
+					{if condition = "isset($notion_comment[$k]) && $notion_comment[$k]['pid'] != 0"}
+						{php}$sub_comment_id++;{/php}
+						<p class="text-center "><a class="btn btn-light text-primary" data-toggle="collapse" href="#collapseSubComment{$sub_comment_id}" role="button" aria-expanded="false" aria-controls="collapseSubComment{$sub_comment_id}">
+							<i class="fa fa-angle-double-down"></i>
+						</a></p>
+						<div class="collapse" id="collapseSubComment{$sub_comment_id}">
+					{/if}
+					{else/}
+						<div class="alert alert-secondary" data-toggle="modal" data-target="#commentModal"  data-nc-id='{$nc.id}'>
+							{$nc.user_name}&nbsp;@&nbsp;{$nc.origin_user}&nbsp;:&nbsp;{:base64_decode($nc.comment_content)}
+						</div>
+						{if condition = "isset($notion_comment[$k]) && $notion_comment[$k]['pid'] == 0"}
+							</div>
+						{/if}
+			{/if}
+			{if condition = "!isset($notion_comment[$k]) or (isset($notion_comment[$k]) and $notion_comment[$k]['pid'] == 0)"}
+						</div>
+					</div> 
+				</div>
+			{/if}
+			{/volist}
+			{if condition = "!empty($notion_comment)"}
+					</div>
+				</div> 
+			</div>
+			{/if}
+	</div>
+</div>
+	<!--  模态框用于提交评论 !-->
+	<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true" style="top: 30%;">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="commentModalLabel">发表评论</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <form id="ajaxForm"  method="post" action="{:url('index/comment/notionComment')}">
+	      <div class="modal-body">
+				<input type="hidden" name="pid" value="0">
+				<input type="hidden" name="notion_id" value="{$notion.id}">
+				<div class="form-group">
+					<textarea name="comment_content" class="form-control" required placeholder="输入评论内容" rows="3"></textarea>
+				</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+	        <button type="submit" class="btn btn-primary">提交</button>
+	      </div>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+{/block}
+{block name='js'}
+<script type="text/javascript">
+	ajaxForm('#','评论成功');
+	//模态框显示，改变表单隐藏值
+	$('#commentModal').on('show.bs.modal', function (event) {
+	  var button = $(event.relatedTarget) 
+	  var commentId = button.data('nc-id')
+	  var modal = $(this)
+	  modal.find('.modal-body input[name=pid]').val(commentId);
+	})
+</script>
+{/block}

@@ -1,0 +1,114 @@
+{extend name="base"/}
+{block name="header"}
+
+<section class="user-header">
+
+	<a class="text-center flex-item">
+		<img id="present_photo" src="{$user.photo}" data-toggle="modal" data-target="#photoModalCenter" title="棋手头像" alt="user-photo">
+	</a>
+	<div class="modal fade" id="photoModalCenter" tabindex="-1" role="dialog" aria-labelledby="photoModalCenterTitle" aria-hidden="true" style="top:15%;">
+	  <div class="modal-dialog modal-lg" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="photoModalCenterTitle">{$user.name}的头像</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body text-center">
+	        <img src="{$user.photo}" class="img-thumbnail img-fluid" id="modal-img"> 
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</section>
+<div class="jumbotron jumbotron-fluid  text-center bg-primary text-light">
+  <div class="container">
+      <h2>头像设置</h2> 
+  </div>
+</div>
+{/block}
+{block name="main"}
+<div class="container">
+	<form id="ajaxForm" class="text-center"  enctype="multipart/form-data" method="post" action="{:url('admin/index/upPhoto')}">	
+		<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
+				    <strong>警告!</strong>
+		</div>
+		<div class="form-group">
+			<div class="alert alert-info alert-dismissable">
+				    <strong>注意！仅支持1M以下的图片上传</strong>
+			</div>
+		</div>
+
+	    <div class="form-group">
+	    	<div class="form-row align-items-center">
+			    <label for="photo" class="col-3 col-sm-3 col-md-2">头像<br/>图片:</label>
+		    	<input type="file"  class="form-control col-9 col-sm-9 col-md-8" id="photo" name="photo" placeholder="选择要上传的图片" required>
+	    	</div>
+	  	</div>
+		<div class="form-group">
+			<button id="submit_btn" type="submit" class="btn btn-primary">保存</button>
+		</div>
+	 		
+	</form>	
+</div>
+{/block}
+{block name='js'}
+<script type="text/javascript">
+	$(function(){
+		$('#ajaxForm').submit(function(){
+			if($('#photo').val()!=''){
+				var file = document.getElementById('photo').files[0];
+				console.log(file.type);
+				 if(file.type != 'image/jpg' && file.type != 'image/gif' && file.type != 'image/png' && file.type != 'image/jpeg'){
+					topAlert('<i class="fa fa-exclamation-triangle"></i>&nbsp;您想上传的图片格式不对，请上传后缀为jpg、gif、png、jpeg的图片！','warning');
+					return false;
+				 }
+				 if (file.size > 1024 * 1024){
+				 
+					fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+					topAlert('<i class="fa fa-exclamation-triangle"></i>&nbsp;您想上传的图片大小是'+fileSize+'，太大了！','warning');
+					return false;
+				}
+				$('#top_alert').find('strong').html('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;正在上传');
+				$('#top_alert').attr('class','alert alert-info alert-dismissable');
+				$('#top_alert').fadeIn();
+			     var formData = new FormData($( "#ajaxForm" )[0]);  
+			     $.ajax({  
+			          url: $('#ajaxForm').attr('action'),  
+			          type: 'POST',  
+			          data: formData,   
+			          cache: false,  
+			          contentType: false,  
+			          processData: false,
+			          dataType:'json',  
+			          success: function (data) {  
+							if(data.errcode == 0){
+								topAlert('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;头像设置成功，正在跳转至棋手中心','success');
+								setTimeout(function(){window.location.href = '{:url("admin/index/index")}';},2000);
+							}else if(data.errcode == '40200'){
+								topAlert(data.errmsg.msg,'warning');
+							}else if(data.errcode == '40100'){
+								topAlert(data.errmsg,'warning');
+							}else{
+								topAlert('未知错误','warning');
+							}
+			          },  
+			          error: function () {  
+			              topAlert('网路出错','warning');    
+			          }
+			     });  
+			}
+			return false; 
+		});
+		$('#photo').change(function(){
+			 var photo = $("#photo").get(0).files[0];
+			 $("#present_photo").prop("src" , window.URL.createObjectURL(photo) );
+			 $("#modal-img").prop("src" , window.URL.createObjectURL(photo) );
+		});
+	});
+</script>
+{/block}

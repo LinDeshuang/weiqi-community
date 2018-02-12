@@ -1,0 +1,73 @@
+{extend name="base"/}
+{block name="header"}
+<div class="jumbotron jumbotron-fluid  text-center bg-primary text-light">
+  <div class="container">
+      <h2>账号设置</h2> 
+  </div>
+</div>
+{/block}
+{block name="main"}
+
+<div class="container">
+	<form id="ajaxForm" class="text-center" method="post" action="{:url('admin/index/account')}">	
+		<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
+				    <strong>警告!</strong>
+		</div>
+		<div class="form-group">
+			<div class="alert alert-info alert-dismissable" >
+					    <strong>修改账号和密码都需要输入原密码</strong>
+			</div>
+		</div>
+	    <div class="form-group">
+	    	<div class="form-row align-items-center">
+			    <label for="account" class="col-3 col-sm-3 col-md-2">账号:</label>
+		    	<input type="text" value="{$user.account}" class="form-control col-9 col-sm-9 col-md-8" id="account" name="account" placeholder="请输入账号" required>
+	    	</div>
+
+	  	</div>
+	  	<div class="form-group">
+		  		<div class="form-row align-items-center">
+				    <label for="original_pwd" class="col-3 col-sm-3 col-md-2">密码:</label>
+			    	<input type="password" class="form-control col-9 col-sm-9 col-md-8" id="original_pwd" name="original_pwd" placeholder="请输入密码" >
+		  		</div>
+
+		  	</div>
+	  <!--Collapse-->
+	  <div class="form-group">
+		  
+			<div class="row">
+			  <div class="col">
+			    <div class="collapse multi-collapse" id="change_pwd">
+			      <div class="card card-body">
+				  	<div class="form-group">
+				  		<div class="form-row align-items-center">
+						    <label for="pwd" class="col-3 col-sm-3 col-md-2">新密码:</label>
+					    	<input type="password" class="form-control col-9 col-sm-9 col-md-8" id="pwd" name="pwd" placeholder="请输入密码" >
+				  		</div>
+
+				  	</div>
+				  	<div class="form-group">
+				  		<div class="form-row align-items-center">
+						    <label for="confirm_pwd" class="col-3 col-sm-3 col-md-2">确认<br/>密码:</label>
+					    	<input type="password" class="form-control col-9 col-sm-9 col-md-8" id="confirm_pwd" name="confirm_pwd" placeholder="请确认密码" >
+				  		</div>
+
+				  	</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</div>
+		<div class="form-group">
+			<a class="btn btn-warning" data-toggle="collapse" href="#change_pwd" role="button" aria-expanded="false" aria-controls="change_pwd">我要改密码</a>
+			<button type="submit" class="btn btn-primary">提交</button>
+		</div>
+	 		
+	</form>	
+</div>
+{/block}
+{block name='js'}
+<script type="text/javascript">
+ajaxForm('/admin/index/index','<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;修改成功，正在跳转至棋手中心');
+</script>
+{/block}

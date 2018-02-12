@@ -1,0 +1,109 @@
+{extend name="base"/}
+{block name="header"}
+<div class="jumbotron jumbotron-fluid  text-center bg-primary text-light">
+  <div class="container">
+      <h2>信息更新</h2> 
+  </div>
+</div>
+{/block}
+{block name="main"}
+<div class="container">
+	<div class="alert alert-warning alert-dismissable" style="display: none;" id="top_alert">
+	    <strong>警告!</strong>
+    </div>
+	<form id="ajaxForm" class="text-center" method="post" action="{:url('admin/index/edit')}" >
+	    <div class="form-group">
+	    	<div class="form-row align-items-center">
+			    <label for="name" class="col-3 col-sm-3 col-md-2">昵称:</label>
+		    	<input type="text" value="{$user.name}" class="form-control col-9 col-sm-9 col-md-8" id="name" name="name" placeholder="请输入昵称" required>
+	    	</div>
+
+	  	</div>
+	    <div class="form-group">
+	    	<div class="form-row align-items-center">
+			    <label class="col-3 col-sm-3 col-md-2">性别:</label>
+		    	<div class="radio col-2 col-sm-2 col-md-1">
+				  <label><input {if $user.gender == 1}checked{/if} type="radio" value="1" name="gender">&nbsp;男</label>
+				</div>
+				<div class="radio col-2 col-sm-2 col-md-1">
+				  <label><input {if $user.gender == 2}checked{/if} type="radio" value="2" name="gender">&nbsp;女</label>
+				</div>
+	    	</div>
+	  	</div>
+	  	<div class="form-group">
+	  		<div class="form-row align-items-center">
+			    <label class="col-3 col-sm-3 col-md-2">段位:</label>
+				  <select id="level_type" name="level_type" class="form-control custom-select col-4 col-sm-4 col-md-3" required>
+				  	<option value="1">专业</option>
+				  	<option value="2">业余</option>
+				  	<option value="3">无段位</option>
+				  </select>
+  				  <select id="level" name="level" class="form-control custom-select col-4 col-sm-4 col-md-3" style="display: none;">
+				  </select>
+	  		</div>
+	  	</div>
+	  	<div class="form-group">
+	  		<div class="form-row align-items-center">
+			    <label for="introduction" class="col-3 col-sm-3 col-md-2">棋手<br/>介绍:</label>
+		    	<textarea class="form-control col-9 col-sm-9 col-md-8" name="introduction" id="introduction" placeholder="输入棋手介绍">{$user.introduction}</textarea>
+	  		</div>
+	  	</div>
+	  	<div class="form-group">
+	  		<div class="form-row align-items-center">
+			    <label for="email" class="col-3 col-sm-3 col-md-2">邮箱:</label>
+		    	<input type="email" value="{$user.email}" class="form-control col-9 col-sm-9 col-md-8" id="email" name="email" placeholder="请输入您的邮箱" required>
+	  		</div>
+	  	</div>
+	 		<button type="submit" class="btn btn-primary">保存</button>
+	</form>	
+</div>
+{/block}
+{block name='js'}
+<script type="text/javascript">
+
+	$(function(){
+		//围棋等级初始化
+		var init_option = '';
+		var init_level_type = '{$user.level_type}'; 
+		var init_level = '{$user.level}';
+		if(init_level_type!=3){
+			$('#level').css({'display':'block'});
+		}
+		for(i in weiqi_level){
+			if(i==init_level_type){
+				for(var j = 0 ,len = weiqi_level[i].length ; j < len ; j++){
+					if(weiqi_level[i][j] == init_level){
+						init_option = init_option + '<option value="' + weiqi_level[i][j] + '" selected>'+ weiqi_level[i][j] + '</option>';
+					}else{
+						init_option = init_option + '<option value="' + weiqi_level[i][j] + '">'+ weiqi_level[i][j] + '</option>';
+					}
+
+				}
+			}
+		}
+		$('#level').html(init_option);
+		//围棋等级选择框动态处理
+		$('#level_type').change(function(){
+			var level_type = $(this).val();
+			var option = '';
+			for(i in weiqi_level){
+				if(i==level_type){
+					for(var j = 0 ,len = weiqi_level[i].length ; j < len ; j++){
+						option = option + '<option value="' + weiqi_level[i][j] + '">'+ weiqi_level[i][j] + '</option>';
+					}
+				}
+			}
+			$('#level').html(option);
+			if(level_type != 1 && level_type != 2){
+				$('#level').css({'display':'none'});
+
+			}else{
+				$('#level').css({'display':'block'});
+
+			}
+		});
+		ajaxForm('/admin/index/index','<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;保存成功，正在跳转至棋手中心');
+
+	})
+</script>
+{/block}
