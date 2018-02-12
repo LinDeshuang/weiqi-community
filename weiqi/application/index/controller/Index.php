@@ -126,6 +126,7 @@ class Index extends Controller
                             $origin_user = $v['user_name'];
                             $notion_comment[$key]['origin_user']=$origin_user;
                             $notion_comment[$key]['origin_comment']=$origin_comment;
+                            break;
                         }
                     }
                 }

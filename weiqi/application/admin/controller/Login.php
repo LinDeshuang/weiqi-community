@@ -44,23 +44,29 @@ class Login extends Controller
     		}
     		else
     		{
-    			$data['pwd'] = md5($data['pwd'].Config::get('salt'));
-    			$res = $this->user_model->allowField(true)->save($data);
-    			if($res)
-    			{
-    				$errMsg = '注册成功';
-    				$errCode = 0;
-    			}
-    			else
-    			{
-    				$errMsg = '注册失败';
+    			if($data['verify_code'] != Session::get($data['email'])){
+    				$errMsg = '注册失败，邮箱验证码错误';
     				$errCode = '40100';
-    			}
+    			}else{
+    				$data['pwd'] = md5($data['pwd'].Config::get('salt'));
+	    			$res = $this->user_model->allowField(true)->save($data);
+	    			if($res)
+	    			{
+	    				$errMsg = '注册成功';
+	    				$errCode = 0;
+	    				Session::set($data['email'],'');
+	    			}
+	    			else
+	    			{
+	    				$errMsg = '注册失败';
+	    				$errCode = '40100';
+	    			}
+    			}	
     		}
-    				exit(json_encode([
-    							'errcode' => $errCode,
-    							'errmsg' => $errMsg
-    						],JSON_UNESCAPED_UNICODE));
+			exit(json_encode([
+						'errcode' => $errCode,
+						'errmsg' => $errMsg
+					],JSON_UNESCAPED_UNICODE));
     	}
     	else
     	{

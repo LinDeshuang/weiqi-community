@@ -80,9 +80,11 @@
 	  	</div>
 	  	<div class="form-group">
 	  		<div class="form-row align-items-center">
-	  			<label for="verify_code" class="col-3 col-sm-3 col-md-2">验证码:</label>
+	  			<label for="verify_code" class="col-3 col-sm-3 col-md-2">邮箱验证码:</label>
 		    	<input type="text" class="form-control col-4 col-sm-4 col-md-3" id="verify_code" name="verify_code" placeholder="点击刷新" required>
-		    	<div class="col-4 col-sm-4 col-md-3"><img src="{:captcha_src()}" style="cursor:pointer;width: 100px;height: 50px" alt="点击更换" title="点击更换" onclick="this.src='{:captcha_src()}?time='+Math.random();document.getElementById('verify_code').focus();"/></div>
+		    	<div class="col-4 col-sm-4 col-md-3">
+		    		<button type="button" class="btn btn-primary" id="getCode">获取邮箱验证码<span id="countDown" style="display: none;"></span></button>
+		    	</div>
 	  		</div>
 	  	</div>
 	  	<div class="form-group">
@@ -115,6 +117,49 @@ $(function(){
 
 		}
 	});
+
+	//获取邮箱验证码
+	$('#getCode').click(function(){
+	   var email = $('input[name=email]').val();
+	   if(email==''){
+	   		topAlert('邮箱还没填呢！','warning');
+	   }else if(!/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/.test(email)){
+	   		topAlert('邮箱格式错误！','warning');
+	   }else{
+	   	$.ajax({
+	   		data:{
+	   			email:email
+	   		},
+	   		url:'/admin/mailer/index',
+	   		method: 'post',
+	   		dataType: 'json',
+	   		success: function(data){
+	   			if(data.errcode == 0){
+	   				topAlert('验证码已发送，请注意查收','success');
+	   				$('#getCode').attr('disabled',true).addClass('disable');
+	   				$('#countDown').css({'display':'block'}).html(30);
+	   				var sec = 30;
+	   				var timer = setInterval(function(){
+	   					sec--;
+	   					if(sec==0){
+	   						$('#countDown').css({'display':'none'});
+	   						$('#getCode').attr('disabled',false).removeClass('disable');
+	   						clearInterval(timer);
+	   					}else{
+	   						$('#countDown').html(sec);
+	   					}
+	   				},1000);
+	   			}else{
+	   				topAlert(data.errmsg,'warning');
+	   			}
+	   		},
+	   		error: function(){
+	   			topAlert('网络错误，请稍后再试','warning');
+	   		}
+	   	})
+	   }
+	   return false;
+	})
 	ajaxForm('/admin/login/index','<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;注册成功，正在跳转至登录页');
 
 })

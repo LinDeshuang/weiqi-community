@@ -12,7 +12,7 @@ Class User extends Validate
 					'gender'      => 'require',
 					'level_type'  => 'require',
 					'email'       => 'email',
-					'verify_code' =>'require|captcha'
+					'verify_code' =>'require'
 				];
 
 	protected $message = [
@@ -29,7 +29,6 @@ Class User extends Validate
 					'gender.require'  => '{"name":"gender","msg":"性别不能为空"}',
 					'level_type.require'  => '{"name":"level_type","msg":"段位类型不能为空"}',
 					'email.email'     => '{"name":"email","msg":"邮箱格式错误"}',
-					'verify_code.require' => '{"name":"verify_code","msg":"验证码必填"}',
-					'verify_code.captcha' => '{"name":"verify_code","msg":"验证码错误"}'
+					'verify_code.require' => '{"name":"verify_code","msg":"验证码必填"}'
 				];
 }
