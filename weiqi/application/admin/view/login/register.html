@@ -126,6 +126,7 @@ $(function(){
 	   }else if(!/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/.test(email)){
 	   		topAlert('邮箱格式错误！','warning');
 	   }else{
+	   	topAlert('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>&nbsp;正在发送邮件，请稍等','success');
 	   	$.ajax({
 	   		data:{
 	   			email:email
