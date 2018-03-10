@@ -31,7 +31,6 @@ class Mailer extends Controller
 		 
 				//使用smtp鉴权方式发送邮件，当然你可以选择pop方式 sendmail方式等 本文不做详解
 				//可以参考http://phpmailer.github.io/PHPMailer/当中的详细介绍
-				$mail->SMTPDebug=1;
 				$mail->isSMTP();
 				//smtp需要鉴权 这个必须是true
 				$mail->SMTPAuth=true;
