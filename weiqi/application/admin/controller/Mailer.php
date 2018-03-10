@@ -38,13 +38,13 @@ class Mailer extends Controller
 				//链接qq域名邮箱的服务器地址
 				$mail->Host = 'smtp.qq.com';
 				//设置使用ssl加密方式登录鉴权
-				$mail->SMTPSecure = 'ssl';
+				$mail->SMTPSecure = 'tsl';
 				//设置ssl连接smtp服务器的远程服务器端口号 可选465或587
-				$mail->Port = 465;
+				$mail->Port = 587;
 				//设置smtp的helo消息头
 				$mail->Helo = 'Hello smtp.qq.com Server';
 				//设置发件人的主机域
-				$mail->Hostname = 'dayson.cc';
+				$mail->Hostname = 'weiqi.dayson.cc';
 				//设置发送的邮件的编码 
 				$mail->CharSet = 'UTF-8';
 				//设置发件人姓名（昵称） 
