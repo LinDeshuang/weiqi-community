@@ -135,6 +135,21 @@ window.onload = function(){
 	oBlackChess.onclick = function (){
 		chess = 1;
 		absoluteChess = 1;
+		wqBoard.onclick = function (e){
+			var oEvent = e||event; 
+			oEvent.preventDefault();
+		    var x = oEvent.offsetX-Math.floor( CELL / 3 );
+	    	var y = oEvent.offsetY-Math.floor( CELL / 3 );
+		    var i = Math.floor( x / CELL );
+    		var j = Math.floor( y / CELL );
+			onOneStep( context , CELL , RADIUS , x , y , chess );
+			if(absoluteChess != 2){
+					chess = absoluteChess;
+				}else{
+						
+					chess = !chessStatusData[i][j];
+				}
+		}
 		this.setAttribute('class','btn btn-secondary disable') ;
 		this.setAttribute('aria-disabled','true');
 		oTakePiece.setAttribute('class','btn btn-light') ;
@@ -149,6 +164,21 @@ window.onload = function(){
 	oWhiteChess.onclick = function (){
 		chess = 0;
 		absoluteChess = 0;
+		wqBoard.onclick = function (e){
+			var oEvent = e||event; 
+			oEvent.preventDefault();
+		    var x = oEvent.offsetX-Math.floor( CELL / 3 );
+	    	var y = oEvent.offsetY-Math.floor( CELL / 3 );
+		    var i = Math.floor( x / CELL );
+    		var j = Math.floor( y / CELL );
+			onOneStep( context , CELL , RADIUS , x , y , chess );
+			if(absoluteChess != 2){
+					chess = absoluteChess;
+				}else{
+						
+					chess = !chessStatusData[i][j];
+				}
+		}
 		this.setAttribute('class','btn btn-secondary disable') ;
 		this.setAttribute('aria-disabled','true');
 		oTakePiece.setAttribute('class','btn btn-light') ;
@@ -213,7 +243,7 @@ window.onload = function(){
 
 	// }
 }
-
+//绘制棋盘的方法
 function drawChessBoard( context , COL , CELL ){
 	var lineLength = (COL+1) * CELL;
 	for( var i = 0 ; i < COL ; i++ )
